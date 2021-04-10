@@ -1,0 +1,75 @@
+package com.sip.ams.controllers;
+
+import com.sip.ams.entities.Provider;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+
+@RequestMapping("/provider")
+@Controller
+public class ProviderControllerBIS {
+    private static ArrayList<Provider> objs = new ArrayList<>();
+
+    static { //le bloc static s'execute avant l'appel du constructeur
+        objs.add(new Provider("Rado", "5 r tamaris 91480 Quincy Sous Senart", "rkajy@hotmail.fr"));
+        objs.add(new Provider("Sopra", "5 pl iris 9240 Courbevoie", "sopra@hotmail.fr"));
+        objs.add(new Provider("Obj3", "Adr obj 3 ", "obj3@hotmail.fr"));
+        objs.add(new Provider("HP", "USA", "hp@hotmail.fr"));
+        objs.add(new Provider("Dell", "Korea", "dell@hotmail.fr"));
+    }
+    @RequestMapping("/list")
+    public String providersList(Model m){
+        String provider ="Samsung";
+        ArrayList<String> providers = new ArrayList<>();
+        providers.add("Lenovo");
+        providers.add("Hp");
+        providers.add("Dell");
+
+        //affichage d'un élement
+        m.addAttribute("pr",provider);
+
+        //Affichage d'une collection
+        m.addAttribute("providers",providers);
+
+
+
+
+        m.addAttribute("objs",objs);
+        return "provider/listProviders";
+    }
+/*
+    @GetMapping("add")
+    public String addProviderGet()
+    {
+        return "provider/addProvider";
+    }*/
+
+    @GetMapping("add")
+    public String addProviderGet(Model m)
+    {
+        m.addAttribute("provider", new Provider());
+        return "provider/addProvider";
+    }
+
+    @PostMapping("add123")
+    public String addProviderPost(@RequestParam("ProviderName")String name,
+                                  @RequestParam("ProviderAdress")String adress,
+                                  @RequestParam("ProviderEmail")String email)
+    {
+        objs.add(new Provider(name,adress,email));
+        return "redirect:list";
+
+    }
+
+    //utiliser th:object pour eviter les nombreux params @RequestParam
+
+    @PostMapping("add")
+    public String addProviderPost(Provider provider)
+    {
+        objs.add(provider);
+        return "redirect:list";
+
+    }
+}
